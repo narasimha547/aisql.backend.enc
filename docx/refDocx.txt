@@ -1,0 +1,52 @@
+Create Partner
+--------------------
+Req : 
+curl -X POST http://localhost:9999/api/admin/addpartner -H "Content-Type: application/json" -d '{"companyName":"testcomp", "email":"gmail@gmai1l.com", "phone":"1234567890", "address":"address"}'
+
+Res : 
+{"message":"Partner added successfully","apiKey":"68edeee6-de1f-44ea-ba7d-32bac7fc20ec","secretKey":"97068cd56c6c48eb991def1f85f42506f8eade0d6ccf271063bc9d09e2fbfc83"}
+
+
+to get enc string 
+----------------------
+Req : 
+curl -X POST http://localhost:9999/api/encrypt -H "Content-Type: application/json" -d '{"data":{"apiKey": "68edeee6-de1f-44ea-ba7d-32bac7fc20ec", "secretKey": "97068cd56c6c48eb991def1f85f42506f8eade0d6ccf271063bc9d09e2fbfc83"}}'
+
+Res :
+{"data":"U2FsdGVkX1+jZMyQkjbOoWLtZ0IVma60uZkHQIBnZsOxES0AAAkaFFDsSIN8YiYSYVntcnBuTBrbeh9yCNYePHrVEGdIVmRIPNaphdU8uEm60WfchEPBjzctKo68K19PieU2EGDgfdeX56L13TSsNQlixuqadPRLRLi7dWrcMiuvqXLQ1AflPJJcquG5HeH3R/XPeYj3B3+haX86YH5FKQ=="}
+
+Generate Token
+--------------------------------------------
+Req : 
+curl -X POST http://localhost:9999/api/authenticate -H "Content-Type: application/json" -d '{"data":"U2FsdGVkX1+jZMyQkjbOoWLtZ0IVma60uZkHQIBnZsOxES0AAAkaFFDsSIN8YiYSYVntcnBuTBrbeh9yCNYePHrVEGdIVmRIPNaphdU8uEm60WfchEPBjzctKo68K19PieU2EGDgfdeX56L13TSsNQlixuqadPRLRLi7dWrcMiuvqXLQ1AflPJJcquG5HeH3R/XPeYj3B3+haX86YH5FKQ=="}'
+
+Res : 
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXBpS2V5IjoiNjhlZGVlZTYtZGUxZi00NGVhLWJhN2QtMzJiYWM3ZmMyMGVjIiwiaWF0IjoxNzQxMzc0NzI3LCJleHAiOjE3NDEzNzgzMjd9.UoHrdc4J-vaw-wFkZ3VFWQVPTmWNV8SR1aUgYLbxclM"}
+
+Create User
+-----------------
+Req : 
+curl -X POST http://localhost:9999/api/encrypt -H "Content-Type: application/json" -d '{"data":{"company_id": 1,"firstName": "John","lastName": "Doe","email": "john.doe@example.com","vcPhone": "1234567890","password": "securePassword","created_by": 1,"vcProfileImg": "profile.jpg","isAdmin": false,"isActive": true}}'
+
+Res :
+{"data":"U2FsdGVkX18rqwJp1MsTPpgSpes7IOW5Fwl1XsFJaco61C+hQXiEuIheK/W++wrY+KtE2NJQsI8rVbVGWCfkLSeseKFfICKB7tnkpOmMXvjJgXmLHW71oBzyywUCmxo3DasINRswJmWRgkgSvn+dtVf6U06ZbsUEC6Ak4++gvQG7eihr6aT0LZViMWFpnjXmjC5z2EhsuFx7wKjceVSwmlfBI/TRdVV2zr+Ker02Xto8ijjGrgYNxiL+NuS7e8l2e0e+Hs9YK3X/1TCn1wGUYmddQ7u3XRyMeDoYRtdt3A8NPBcTDtte09B2jYN3t5mh"}
+
+Req : 
+curl -X POST http://localhost:9999/api/users  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXBpS2V5IjoiNjhlZGVlZTYtZGUxZi00NGVhLWJhN2QtMzJiYWM3ZmMyMGVjIiwiaWF0IjoxNzQxMzc0NzI3LCJleHAiOjE3NDEzNzgzMjd9.UoHrdc4J-vaw-wFkZ3VFWQVPTmWNV8SR1aUgYLbxclM"  -H "Content-Type: application/json" -d '{"data":"U2FsdGVkX18rqwJp1MsTPpgSpes7IOW5Fwl1XsFJaco61C+hQXiEuIheK/W++wrY+KtE2NJQsI8rVbVGWCfkLSeseKFfICKB7tnkpOmMXvjJgXmLHW71oBzyywUCmxo3DasINRswJmWRgkgSvn+dtVf6U06ZbsUEC6Ak4++gvQG7eihr6aT0LZViMWFpnjXmjC5z2EhsuFx7wKjceVSwmlfBI/TRdVV2zr+Ker02Xto8ijjGrgYNxiL+NuS7e8l2e0e+Hs9YK3X/1TCn1wGUYmddQ7u3XRyMeDoYRtdt3A8NPBcTDtte09B2jYN3t5mh"}'
+
+Res : 
+{"message":"User added successfully."}
+
+
+Update User
+-------------------
+Req : 
+curl -X POST http://localhost:9999/api/encrypt -H "Content-Type: application/json" -d '{"data":{"firstName": "Updated Name", "email": "updated.email@example.com"}}'
+
+Res :
+{"data":"U2FsdGVkX19SEN7w8Eqhc9AKL1VuXs1vT0zlWx6GxWSVP4/AK8sqWKum6udUFE49ndSbPHWpWgZ/IybxZGaeOhx2qaQWLf+aBYTZ0LS/ByMPu4i0TIKFDJHHkLI86XMN"}
+
+
+curl -X  PUT http://localhost:9999/api/users/1 -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiYXBpS2V5IjoiNjhlZGVlZTYtZGUxZi00NGVhLWJhN2QtMzJiYWM3ZmMyMGVjIiwiaWF0IjoxNzQxMzc0NzI3LCJleHAiOjE3NDEzNzgzMjd9.UoHrdc4J-vaw-wFkZ3VFWQVPTmWNV8SR1aUgYLbxclM" -H "Content-Type: application/json" -d '{"data":"U2FsdGVkX19SEN7w8Eqhc9AKL1VuXs1vT0zlWx6GxWSVP4/AK8sqWKum6udUFE49ndSbPHWpWgZ/IybxZGaeOhx2qaQWLf+aBYTZ0LS/ByMPu4i0TIKFDJHHkLI86XMN"}'
+
+{"message":"User updated successfully."}

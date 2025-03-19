@@ -1,0 +1,147 @@
+Node
+======
+dockerfile
+-------------
+# Use the official Node.js 20 image as the base image
+FROM node:20
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install npm 11
+RUN npm install -g npm@11
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port the app runs on
+EXPOSE 9999
+
+# Command to run the application
+CMD ["node", "app.js"]
+
+
+============================================================================================================
+
+nextgenai
+
+Steps
+-----
+1. creaed docerfile
+
+2. run build it will build image
+   /> sudo docker build -t nextgenai .
+   
+3. to checkimages use below cmd
+   />sudo docker images
+   
+4. to delete image 
+   />sudo docker rmi -f  nextgenai
+   
+5. list of running and hidden continer
+   />sudo docker ps -a
+   
+6. list of running 
+   />sudo docker ps
+   
+7. if container runnung to stop
+   />sudo docker stop f357e61eb35c // (CONTAINER ID)
+   
+8. if container remove
+   />sudo docker rm f357e61eb35c// (CONTAINER ID)
+
+9. It will run as container
+   />sudo docker run -d -p 9999:9999 --env-file .env nextgenai
+
+10. It will check issue on continer
+   />sudo docker logs 2c6ac97fbcf5
+   
+   To verify our service is up or not check this url : http://localhost:9999/
+   
+   Done
+   
+11. Inside Continer
+
+  />sudo docker exec -it efafa96981ad /bin/bash
+  
+  
+  
+Docker Hub
+-----------
+1. docker login
+
+2. check docker images
+   >/sudo docker images
+
+REPOSITORY               TAG       IMAGE ID       CREATED        SIZE
+nextgenai                  latest    fe646f65a8f2   5 hours ago    2.02GB
+
+3. Tag the Image
+   />sudo docker tag fe646f65a8f2 narasimha547/nextgenai:latest
+   
+4. Docker push
+   />sudo docker push narasimha547/nextgenai:latest
+   
+4. login docker hub and check, you will get repository of "narasimha547/nextgenai" //hub.docker.com
+
+
+Create folder in github
+
+.github/workflows/docker-build-push.yml
+----------------------------------------
+	name: Docker CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/dockertest:latest
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: SSH into Server and Deploy
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/dockertest:latest
+            docker stop dockertest || true
+            docker rm dockertest || true
+            docker run -d --name dockertest -p 9999:9999 ${{ secrets.DOCKER_USERNAME }}/dockertest:latest
